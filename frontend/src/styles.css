@@ -219,24 +219,142 @@ body {
 
 /* --- PLAYER APP LAYOUT --- */
 .player-app {
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 24px 20px;
-  padding-bottom: 140px;
+  padding-bottom: 120px;
+  /* More space for bottom nav */
 }
 
 .character-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .character-name {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   color: #fff;
+  line-height: 1.2;
+}
+
+/* --- CHARACTER PROFILE TYPOGRAPHY --- */
+.character-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-card {
+  /* No background container needed if we want cleaner look, just sections */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.character-role {
+  font-size: 18px;
+  color: var(--accent-secondary);
+  font-weight: 600;
+  margin-top: -16px;
+  /* Pull closer to name */
+  margin-bottom: 8px;
+}
+
+.character-age {
+  font-size: 15px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.character-description h3,
+.character-location h3 {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.character-description p,
+.character-location p,
+.backstory-content p {
+  font-size: 16px;
+  line-height: 1.6;
+  /* Better readability */
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* Backstory Toggle Button Styling */
+.backstory-toggle {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.backstory-toggle:active {
+  background: var(--bg-card-elevated);
+}
+
+.backstory-toggle h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.backstory-content {
+  margin-top: 12px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.character-location {
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+}
+
+.location-description {
+  margin-top: 8px;
+  font-style: italic;
+  font-size: 14px !important;
+  color: var(--text-muted) !important;
 }
 
 /* Stats Card Rendering */
@@ -286,14 +404,14 @@ body {
 
 /* HP Bar Styling */
 .hp-section {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .hp-bar-label {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .hp-bar-label span:first-child {
@@ -301,6 +419,7 @@ body {
   font-weight: 800;
   color: var(--text-muted);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .hp-values {
@@ -555,6 +674,140 @@ body {
   color: var(--accent-primary);
 }
 
+/* --- DICE PANEL Styling --- */
+.dice-panel {
+  padding-bottom: 100px;
+}
+
+.dice-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.dice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* 3 columns on mobile */
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 400px) {
+  .dice-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dice-button {
+  aspect-ratio: 1;
+  /* Square buttons */
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #fff;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dice-button:active {
+  transform: scale(0.92);
+  background: var(--bg-card-elevated);
+}
+
+.dice-button.rolling {
+  animation: shake 0.5s infinite;
+  border-color: var(--accent-primary);
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(5deg);
+  }
+
+  75% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.dice-label {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  /* Gold for lucky dice */
+}
+
+.dice-sides {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.dice-result {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dice-result-animation {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at center, var(--accent-primary), #b91c1c);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(234, 86, 86, 0.6);
+  border: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.dice-result-value {
+  font-size: 48px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.dice-result-type {
+  font-size: 14px;
+  opacity: 0.8;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* --- LOGIN SCREEN (Festive) --- */
 .login-screen {
   min-height: 100vh;
@@ -705,6 +958,30 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.item-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.item-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
 }
 
 .item-title-row {
