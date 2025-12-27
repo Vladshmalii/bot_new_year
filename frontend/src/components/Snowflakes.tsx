@@ -50,6 +50,22 @@ const Snowflakes: React.FC = () => {
 
     snowflakesRef.current = a;
 
+    // Определяем зону накопления снега (верхняя часть экрана, где начинается контент)
+    const getContentStartY = () => {
+      // Ищем первый контентный блок (обычно начинается после заголовка/навигации)
+      const contentElements = document.querySelectorAll('.character-profile, .stats-card, .inventory-list-container, .master-dashboard, .player-app-content, .master-content, .profile-card');
+      if (contentElements.length > 0) {
+        const firstElement = contentElements[0] as HTMLElement;
+        const rect = firstElement.getBoundingClientRect();
+        // Возвращаем верхнюю границу контента - снежинки накапливаются на верхней части блока
+        const topY = rect.top + window.scrollY;
+        // Снежинки накапливаются на верхней части блока (от -30px до +30px от верха)
+        return Math.max(topY - 30, 80);
+      }
+      // По умолчанию - примерно 15-20% от высоты экрана (зона заголовков)
+      return Math.max(ch * 0.15, 80);
+    };
+
     // Функция для создания анимации снежинки
     const spawnSnowflake = (f: number, r: boolean) => {
       // Получаем размер из стиля снежинки
@@ -59,6 +75,12 @@ const Snowflakes: React.FC = () => {
       const endX = startX + randomOffset;
       const timeScale = size / 37; // timeScale основан на размере (как в оригинале)
       const baseDuration = 15; // базовая длительность падения
+      
+      // Высота, где снежинки должны накапливаться (верхняя часть контента)
+      const contentStartY = getContentStartY();
+      // Снежинки падают до этой высоты и останавливаются
+      // Вариация от -20 до +40px для эффекта накопления на верхней части блока
+      const stopY = contentStartY - 20 + Math.random() * 60;
 
       a[f].t = gsap.timeline({ repeat: -1, repeatRefresh: true })
         .fromTo(
@@ -66,14 +88,25 @@ const Snowflakes: React.FC = () => {
           {
             x: startX,
             y: -15,
-            rotation: 0
+            rotation: 0,
+            opacity: 0
           },
           {
-            ease: 'none',
-            y: ch + 15,
+            ease: 'power1.out', // Замедление в конце для плавной остановки
+            y: stopY,
             x: endX,
-            rotation: 360 * (Math.random() > 0.5 ? 1 : -1), // случайное вращение
+            rotation: 360 * (Math.random() > 0.5 ? 1 : -1),
+            opacity: parseFloat(a[f].s.style.opacity) || 0.6,
             duration: baseDuration,
+          }
+        )
+        // После остановки снежинка остается на месте (накапливается)
+        .to(
+          a[f].s,
+          {
+            opacity: parseFloat(a[f].s.style.opacity) || 0.6,
+            duration: 999, // Долгое время на месте для эффекта накопления
+            ease: 'none'
           }
         )
         .seek(r ? Math.random() * 99 : 0)
@@ -85,7 +118,7 @@ const Snowflakes: React.FC = () => {
       spawnSnowflake(f, true);
     }
 
-    // Обработка изменения размера окна
+    // Обработка изменения размера окна и скролла
     const handleResize = () => {
       const newCw = window.innerWidth;
       const newCh = window.innerHeight;
@@ -99,11 +132,37 @@ const Snowflakes: React.FC = () => {
       }
     };
 
+    // Обновляем позиции снежинок при скролле (чтобы они оставались на верхней части блоков)
+    const handleScroll = () => {
+      // Перезапускаем анимации для обновления позиций накопления
+      for (let f = 0; f < 1300; f++) {
+        if (a[f].t) {
+          const currentProgress = a[f].t.progress();
+          a[f].t.kill();
+          spawnSnowflake(f, false);
+          // Восстанавливаем прогресс анимации
+          if (a[f].t) {
+            a[f].t.progress(currentProgress);
+          }
+        }
+      }
+    };
+
     window.addEventListener('resize', handleResize);
+    // Обновляем при скролле с debounce для производительности
+    let scrollTimeout: NodeJS.Timeout;
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(handleScroll, 100);
+    });
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
       a.forEach(snowflake => {
         if (snowflake.t) {
           snowflake.t.kill();

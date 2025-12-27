@@ -156,17 +156,23 @@ const syncWithJson = async () => {
         saveData(gameData);
       } else {
         // Обновляем персонажей: берем структуру из JSON, но сохраняем изменения (HP и т.д.) из localStorage
+        const { migrateCharacterInventory } = require('../utils/inventoryMigration');
         const updatedCharacters = (jsonData.characters || []).map((jsonChar: any) => {
           const localChar = (localData.characters || []).find((c: any) => c.id === jsonChar.id);
           if (localChar) {
+            const mergedInv = mergeInventory(jsonChar.inventory, localChar.inventory);
             return {
               ...jsonChar, // Новая структура из JSON
               hp_current: localChar.hp_current,
               hp_max: localChar.hp_max !== jsonChar.hp_max ? localChar.hp_max : jsonChar.hp_max,
-              inventory: mergeInventory(jsonChar.inventory, localChar.inventory),
+              inventory: migrateCharacterInventory(mergedInv), // Мигрируем инвентарь
             };
           }
-          return jsonChar;
+          // Мигрируем инвентарь даже для новых персонажей
+          return {
+            ...jsonChar,
+            inventory: migrateCharacterInventory(jsonChar.inventory || [])
+          };
         });
         
         gameData = {
@@ -283,35 +289,42 @@ export const api = {
 
     // Master characters
     if (url === '/master/characters') {
-      return { data: gameData.characters };
+      // Мигрируем инвентарь для всех персонажей
+      const { migrateCharacterInventory } = require('../utils/inventoryMigration');
+      const migratedCharacters = gameData.characters.map(char => ({
+        ...char,
+        inventory: migrateCharacterInventory(char.inventory || [])
+      }));
+      return { data: migratedCharacters };
     }
 
     // Get players list
     if (url === '/players') {
-      // Всегда загружаем актуальные данные
-      const currentData = loadData();
-      gameData = currentData;
-      
-      // Если нет игроков, пробуем загрузить из JSON
-      if (!gameData.players || gameData.players.length === 0) {
-        try {
-          const publicUrl = getPublicUrl();
-          const jsonResponse = await fetch(`${publicUrl}/data.json`);
-          if (jsonResponse.ok) {
-            const jsonData = await jsonResponse.json();
-            if (jsonData.players && jsonData.players.length > 0) {
-              gameData.players = jsonData.players;
-              // Обновляем localStorage
-              const updatedData = { ...gameData, players: jsonData.players };
-              saveData(updatedData);
-              return { data: jsonData.players };
-            }
+      // Всегда загружаем актуальные данные из JSON для списка игроков
+      // Это гарантирует, что все игроки из data.json будут видны
+      try {
+        const publicUrl = getPublicUrl();
+        const jsonResponse = await fetch(`${publicUrl}/data.json`);
+        if (jsonResponse.ok) {
+          const jsonData = await jsonResponse.json();
+          if (jsonData.players && jsonData.players.length > 0) {
+            // Обновляем список игроков в gameData и localStorage
+            const currentData = loadData();
+            gameData = {
+              ...currentData,
+              players: jsonData.players
+            };
+            saveData(gameData);
+            return { data: jsonData.players };
           }
-        } catch (e) {
-          console.error('Failed to load players from JSON:', e);
         }
+      } catch (e) {
+        console.error('Failed to load players from JSON:', e);
       }
       
+      // Fallback на данные из localStorage
+      const currentData = loadData();
+      gameData = currentData;
       return { data: gameData.players || [] };
     }
 
@@ -723,6 +736,11 @@ export const api = {
       const characterId = parseInt(updateCharMatch[1]);
       const character = gameData.characters.find(c => c.id === characterId);
       if (character) {
+        // Мигрируем инвентарь если он обновляется
+        if (data.inventory && Array.isArray(data.inventory)) {
+          const { migrateCharacterInventory } = require('../utils/inventoryMigration');
+          data.inventory = migrateCharacterInventory(data.inventory);
+        }
         Object.assign(character, data);
         saveData(gameData);
         return { data: character };

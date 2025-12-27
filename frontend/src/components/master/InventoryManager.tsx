@@ -58,7 +58,7 @@ const InventoryManager: React.FC = () => {
               );
             })}
           </div>
-          </div>
+        </div>
 
         {selectedCharacter && (
           <MasterInventoryEditor 
