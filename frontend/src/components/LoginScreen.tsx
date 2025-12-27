@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { resetCache } from '../services/api';
-import { Key, Dice6, RefreshCw } from 'lucide-react';
+import { Key, Sparkles, RefreshCw } from 'lucide-react';
 
 const MASTER_PASSWORD = '2365';
 
@@ -49,7 +49,7 @@ const LoginScreen: React.FC = () => {
   const handleMasterCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
+
     if (!masterCode.trim()) {
       setError('Введите код');
       return;
@@ -74,7 +74,7 @@ const LoginScreen: React.FC = () => {
     if (!window.confirm('Очистить кэш и перезагрузить данные из JSON? Все изменения (HP, инвентарь и т.д.) будут потеряны.')) {
       return;
     }
-    
+
     setResettingCache(true);
     setError('');
     try {
@@ -97,7 +97,7 @@ const LoginScreen: React.FC = () => {
           onClick={() => setShowMasterCode(!showMasterCode)}
           title="Код мастера"
         >
-          <Key size={24} />
+          <Key size={24} color="var(--accent-gold)" />
         </button>
         <button
           className="reset-cache-button"
@@ -105,20 +105,20 @@ const LoginScreen: React.FC = () => {
           title="Сбросить кэш и перезагрузить данные"
           disabled={resettingCache}
         >
-          <RefreshCw size={24} className={resettingCache ? 'spinning' : ''} />
+          <RefreshCw size={24} className={resettingCache ? 'spinning' : ''} color="var(--accent-cyan)" />
         </button>
       </div>
 
       {showMasterCode && (
         <div className="master-code-modal">
           <div className="master-code-content">
-            <h2>Код мастера</h2>
+            <h2 style={{ fontFamily: 'Cinzel, serif', color: 'var(--accent-gold)' }}>Тайный Код</h2>
             <form onSubmit={handleMasterCodeSubmit}>
               <input
                 type="password"
                 value={masterCode}
                 onChange={(e) => setMasterCode(e.target.value)}
-                placeholder="Введите код"
+                placeholder="****"
                 autoFocus
                 disabled={loading}
               />
@@ -128,8 +128,9 @@ const LoginScreen: React.FC = () => {
                   type="submit"
                   className="login-button"
                   disabled={loading}
+                  style={{ background: 'var(--accent-mystic)' }}
                 >
-                  {loading ? 'Вход...' : 'Войти'}
+                  {loading ? 'Проникновение...' : 'Войти'}
                 </button>
                 <button
                   type="button"
@@ -151,14 +152,16 @@ const LoginScreen: React.FC = () => {
       <div className="login-container">
         <div className="login-header">
           <div className="login-title-wrapper">
-            <Dice6 className="login-title-icon" size={32} />
-            <h1 className="login-title">Last New Year</h1>
+            <Sparkles className="login-title-icon" size={36} color="var(--accent-gold)" />
+            <h1 className="login-title" style={{ fontFamily: 'Cinzel, serif', letterSpacing: '2px' }}>
+              Mystic <span style={{ color: 'var(--accent-gold)' }}>2025</span>
+            </h1>
           </div>
-          <p className="login-subtitle">Выберите ваше имя</p>
+          <p className="login-subtitle">Выберите свою судьбу</p>
         </div>
 
         {loadingPlayers ? (
-          <div className="players-loading">Загрузка игроков...</div>
+          <div className="players-loading">Призыв героев...</div>
         ) : (
           <div className="players-grid">
             {players.map((player) => (
@@ -179,5 +182,6 @@ const LoginScreen: React.FC = () => {
     </div>
   );
 };
+
 
 export default LoginScreen;

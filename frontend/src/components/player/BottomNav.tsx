@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
-  User, 
-  Zap, 
-  Package, 
-  StickyNote,
-  Dice6 
+import {
+  User,
+  Flame,
+  Backpack,
+  Scroll,
+  Dices
 } from 'lucide-react';
 
 type Tab = 'profile' | 'stats' | 'inventory' | 'notes' | 'dice';
@@ -22,39 +22,40 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
         onClick={() => onTabChange('profile')}
       >
-        <User className="nav-icon" size={22} />
-        <span className="nav-label">Персонаж</span>
+        <User className="nav-icon" size={24} color={activeTab === 'profile' ? 'var(--accent-gold)' : undefined} />
+        <span className="nav-label" style={{ color: activeTab === 'profile' ? 'var(--accent-gold)' : undefined }}>Персонаж</span>
       </button>
       <button
         className={`nav-item ${activeTab === 'stats' ? 'active' : ''}`}
         onClick={() => onTabChange('stats')}
       >
-        <Zap className="nav-icon" size={22} />
-        <span className="nav-label">Статы</span>
+        <Flame className="nav-icon" size={24} color={activeTab === 'stats' ? 'var(--accent-cyan)' : undefined} />
+        <span className="nav-label" style={{ color: activeTab === 'stats' ? 'var(--accent-cyan)' : undefined }}>Статы</span>
       </button>
       <button
         className={`nav-item dice-center-button ${activeTab === 'dice' ? 'active' : ''}`}
         onClick={() => onTabChange('dice')}
       >
-        <Dice6 className="nav-icon" size={28} />
+        <Dices className="nav-icon" size={32} />
       </button>
       <button
         className={`nav-item ${activeTab === 'inventory' ? 'active' : ''}`}
         onClick={() => onTabChange('inventory')}
       >
-        <Package className="nav-icon" size={22} />
-        <span className="nav-label">Инвентарь</span>
+        <Backpack className="nav-icon" size={24} color={activeTab === 'inventory' ? 'var(--accent-mystic)' : undefined} />
+        <span className="nav-label" style={{ color: activeTab === 'inventory' ? 'var(--accent-mystic)' : undefined }}>Вещи</span>
       </button>
       <button
         className={`nav-item ${activeTab === 'notes' ? 'active' : ''}`}
         onClick={() => onTabChange('notes')}
       >
-        <StickyNote className="nav-icon" size={22} />
-        <span className="nav-label">Записки</span>
+        <Scroll className="nav-icon" size={24} color={activeTab === 'notes' ? 'var(--accent-gold)' : undefined} />
+        <span className="nav-label" style={{ color: activeTab === 'notes' ? 'var(--accent-gold)' : undefined }}>Свитки</span>
       </button>
     </nav>
   );
 };
 
 export default BottomNav;
+
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LoginScreen from './components/LoginScreen';
 import PlayerApp from './components/PlayerApp';
 import MasterApp from './components/MasterApp';
-import Snowflakes from './components/Snowflakes';
+import MysticBackground from './components/MysticBackground';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function AppContent() {
@@ -31,11 +31,12 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <Snowflakes />
+        <MysticBackground />
         <AppContent />
       </div>
     </AuthProvider>
   );
 }
+
 
 export default App;

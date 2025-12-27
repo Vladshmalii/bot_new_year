@@ -18,7 +18,7 @@ const MasterApp: React.FC = () => {
   return (
     <div className="master-app">
       <div className="master-header">
-        <h1 className="master-header-title">🎭 Панель мастера</h1>
+        <h1 className="master-header-title">Панель Мастера</h1>
         <button className="logout-button" onClick={logout}>
           Выйти
         </button>
