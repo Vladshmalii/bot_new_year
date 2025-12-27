@@ -9,6 +9,7 @@
     "@types/react-dom": "^18.2.17",
     "ajv": "^8.12.0",
     "axios": "^1.6.2",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.556.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

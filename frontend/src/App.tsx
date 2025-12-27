@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LoginScreen from './components/LoginScreen';
 import PlayerApp from './components/PlayerApp';
 import MasterApp from './components/MasterApp';
+import Snowflakes from './components/Snowflakes';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function AppContent() {
@@ -30,6 +31,7 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
+        <Snowflakes />
         <AppContent />
       </div>
     </AuthProvider>

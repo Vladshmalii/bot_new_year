@@ -110,10 +110,18 @@ const loadData = (): GameData => {
   return migrateGameData(defaultData);
 };
 
+// Получаем базовый URL для GitHub Pages
+const getPublicUrl = () => {
+  // process.env.PUBLIC_URL устанавливается автоматически на основе homepage в package.json
+  // На GitHub Pages это будет '/bot_new_year', локально - пустая строка
+  return process.env.PUBLIC_URL || '';
+};
+
 // Загружаем JSON из public/data.json если есть
 const loadJsonData = async (): Promise<GameData | null> => {
   try {
-    const response = await fetch('/data.json');
+    const publicUrl = getPublicUrl();
+    const response = await fetch(`${publicUrl}/data.json`);
     if (response.ok) {
       return await response.json();
     }
@@ -287,7 +295,8 @@ export const api = {
       // Если нет игроков, пробуем загрузить из JSON
       if (!gameData.players || gameData.players.length === 0) {
         try {
-          const jsonResponse = await fetch('/data.json');
+          const publicUrl = getPublicUrl();
+          const jsonResponse = await fetch(`${publicUrl}/data.json`);
           if (jsonResponse.ok) {
             const jsonData = await jsonResponse.json();
             if (jsonData.players && jsonData.players.length > 0) {
@@ -366,7 +375,8 @@ export const api = {
       
       // Загружаем из JSON если нужно
       try {
-        const jsonResponse = await fetch('/data.json');
+        const publicUrl = getPublicUrl();
+        const jsonResponse = await fetch(`${publicUrl}/data.json`);
         if (jsonResponse.ok) {
           const jsonData = await jsonResponse.json();
           
