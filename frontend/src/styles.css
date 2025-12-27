@@ -165,6 +165,48 @@ body {
   font-size: 14px;
 }
 
+/* --- ADMIN PANEL BUTTONS FIX --- */
+/* Restore visibility and clickability for all buttons in admin panel */
+.master-main button {
+  cursor: pointer;
+}
+
+.master-main button.primary-btn,
+.master-content-area button {
+  background: var(--bg-card-elevated);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.master-main button.primary-btn:hover,
+.master-content-area button:not(.vehicle-btn):hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(234, 86, 86, 0.3);
+}
+
+/* Specific fix for sidebar toggle which might be hidden */
+.sidebar-toggle {
+  background: transparent !important;
+  color: #fff !important;
+  padding: 8px !important;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border-subtle);
@@ -822,14 +864,62 @@ body {
   z-index: 10;
 }
 
-.login-title {
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.login-title-custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.9;
   margin-bottom: 40px;
+  filter: drop-shadow(0 0 20px rgba(255, 230, 0, 0.3));
+}
+
+.title-word-last {
+  font-size: 48px;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
   color: #fff;
-  text-align: center;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+  margin-bottom: -5px;
+}
+
+.title-word-new {
+  font-size: 82px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: transparent;
+  background: linear-gradient(135deg, #fff 20%, #ffc107 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  letter-spacing: -0.04em;
+  transform: scaleY(1.1);
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.title-word-year {
+  font-size: 32px;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  color: var(--accent-primary);
+  letter-spacing: 0.1em;
+  position: relative;
+}
+
+.title-word-year::before,
+.title-word-year::after {
+  content: '✨';
+  font-size: 16px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.title-word-year::before {
+  left: -25px;
+}
+
+.title-word-year::after {
+  right: -25px;
 }
 
 .players-grid {

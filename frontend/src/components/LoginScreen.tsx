@@ -151,10 +151,11 @@ const LoginScreen: React.FC = () => {
 
       <div className="login-container">
         <div className="login-header">
-          <div className="login-title-wrapper">
-            <Sparkles className="login-title-icon" size={32} color="var(--accent-secondary)" />
-            <h1 className="login-title">
-              Mystic <span style={{ color: 'var(--accent-secondary)' }}>2025</span>
+          <div className="login-title-wrapper-custom">
+            <h1 className="login-title-custom">
+              <span className="title-word-last">Last</span>
+              <span className="title-word-new">New</span>
+              <span className="title-word-year">Year</span>
             </h1>
           </div>
           <p className="login-subtitle">Выберите свою судьбу</p>
