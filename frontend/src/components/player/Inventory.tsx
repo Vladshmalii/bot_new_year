@@ -33,20 +33,20 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
     }
   };
 
-  const filteredItems = filter === 'all' 
-    ? inventoryItems 
+  const filteredItems = filter === 'all'
+    ? inventoryItems
     : inventoryItems.filter((item: any) => (item.item_type || 'tool') === filter);
 
   const handleEquipToggle = async (item: any) => {
     if (!character) return;
-    
+
     setIsProcessing(true);
     try {
       await api.post('/character/item/equip', {
         character_id: character.id,
         item_name: item.name
       });
-      
+
       setUseResult(`${item.equipped ? 'Снято' : 'Экипировано'}: ${item.name}`);
       if (onUpdate) onUpdate();
     } catch (err) {
@@ -59,13 +59,13 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
 
   const handleUseItem = async (item: any) => {
     if (!character) return;
-    
+
     const parsed = parseUseEffect(item.use_effect);
     if (!parsed) {
       setUseResult(`Использовано: ${item.name}`);
       return;
     }
-    
+
     setIsProcessing(true);
     try {
       await api.post('/character/item/use', {
@@ -74,7 +74,7 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
         effect_type: parsed.type,
         effect_params: parsed.params
       });
-      
+
       setUseResult(`${item.name}: ${getEffectDescription(parsed.type)}`);
       if (onUpdate) onUpdate();
     } catch (err) {
@@ -87,7 +87,7 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
 
   const handleVehicleAction = async (vehicle: any, action: string) => {
     if (!character) return;
-    
+
     setIsProcessing(true);
     try {
       await api.post('/character/vehicle/action', {
@@ -95,7 +95,7 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
         vehicle_name: vehicle.name,
         action
       });
-      
+
       setUseResult(`${vehicle.name}: действие выполнено`);
       if (onUpdate) onUpdate();
     } catch (err) {
@@ -108,22 +108,22 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
 
   const renderModifiers = (item: any) => {
     if (!item.modifiers) return null;
-    
+
     const mods = item.modifiers;
     const parts: string[] = [];
-    
+
     if (mods.damage_bonus) parts.push(`Урон: +${mods.damage_bonus}`);
     if (mods.defense_bonus) parts.push(`Защита: +${mods.defense_bonus}`);
     if (mods.hp_bonus) parts.push(`HP: +${mods.hp_bonus}`);
-    
+
     if (mods.stat_bonus) {
       Object.entries(mods.stat_bonus).forEach(([stat, value]) => {
         if (value) parts.push(`${stat.toUpperCase()}: +${value}`);
       });
     }
-    
+
     if (parts.length === 0) return null;
-    
+
     return (
       <div className="item-modifiers">
         <h4>Бонусы:</h4>
@@ -138,10 +138,10 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
 
   const renderVehicleInfo = (vehicle: any) => {
     if (!vehicle.vehicle) return null;
-    
+
     const v = vehicle.vehicle;
     const fuelPercent = (v.fuel_current / v.fuel_max) * 100;
-    
+
     return (
       <div className="vehicle-info">
         <h4>Транспорт</h4>
@@ -159,21 +159,21 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
           </div>
         </div>
         <div className="vehicle-actions">
-          <button 
+          <button
             onClick={() => handleVehicleAction(vehicle, 'drive')}
             disabled={v.fuel_current === 0 || isProcessing}
             className="vehicle-btn"
           >
             Ехать
           </button>
-          <button 
+          <button
             onClick={() => handleVehicleAction(vehicle, 'speed_toggle')}
             disabled={isProcessing}
             className="vehicle-btn"
           >
             Переключить режим
           </button>
-          <button 
+          <button
             onClick={() => handleVehicleAction(vehicle, 'taunt')}
             disabled={isProcessing}
             className="vehicle-btn"
@@ -199,24 +199,35 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
   return (
     <div className="inventory">
       <h2 className="inventory-title">Инвентарь</h2>
-      
+
       <div className="inventory-filters">
-        {(['all', 'weapon', 'armor', 'tool', 'consumable', 'vehicle', 'quest'] as const).map(f => (
-          <button
-            key={f}
-            className={`filter-btn ${filter === f ? 'active' : ''}`}
-            onClick={() => setFilter(f)}
-          >
-            {f === 'all' ? 'Все' : f}
-          </button>
-        ))}
+        {(['all', 'weapon', 'armor', 'tool', 'consumable', 'vehicle', 'quest'] as const).map(f => {
+          const labelMap: Record<string, string> = {
+            all: 'Все',
+            weapon: 'Оружие',
+            armor: 'Броня',
+            tool: 'Инструменты',
+            consumable: 'Еда/Зелья',
+            vehicle: 'Транспорт',
+            quest: 'Квесты'
+          };
+          return (
+            <button
+              key={f}
+              className={`filter-btn ${filter === f ? 'active' : ''}`}
+              onClick={() => setFilter(f)}
+            >
+              {labelMap[f] || f}
+            </button>
+          );
+        })}
       </div>
 
       <div className="inventory-list">
         {filteredItems.map((item: any, index: number) => {
           const itemKey = item.name || `item-${index}`;
           const itemType = item.item_type || 'tool';
-          
+
           return (
             <div
               key={itemKey}
@@ -245,66 +256,66 @@ const Inventory: React.FC<InventoryProps> = ({ items, character, onUpdate }) => 
             <button className="item-modal-close" onClick={() => { setSelectedItem(null); setUseResult(null); }}>
               ×
             </button>
-            
+
             <div className="item-modal-header">
               <span className="item-type-icon-large">{getItemTypeIcon(selectedItem.item_type || 'tool')}</span>
               <h2 className="item-modal-name">{selectedItem.name}</h2>
             </div>
-            
+
             {selectedItem.short_description && (
               <p className="item-modal-description">{selectedItem.short_description}</p>
             )}
-            
+
             {selectedItem.details && (
               <div className="item-modal-details">
                 <h4>Описание:</h4>
                 <p>{selectedItem.details}</p>
               </div>
             )}
-            
+
             {selectedItem.use_description && (
               <div className="item-modal-use-desc">
                 <h4>Использование:</h4>
                 <p>{selectedItem.use_description}</p>
               </div>
             )}
-            
+
             {renderModifiers(selectedItem)}
-            
+
             {selectedItem.durability && selectedItem.durability.max > 0 && (
               <div className="item-durability">
                 <span>Прочность: {selectedItem.durability.current} / {selectedItem.durability.max}</span>
               </div>
             )}
-            
+
             {selectedItem.item_type === 'vehicle' && renderVehicleInfo(selectedItem)}
-            
+
             <div className="item-modal-buttons">
               {selectedItem.use_effect && (
-                <button 
-                  className="use-button primary" 
+                <button
+                  className="use-button primary"
                   onClick={() => handleUseItem(selectedItem)}
                   disabled={isProcessing}
                 >
                   Использовать
                 </button>
               )}
-              
+
               {canEquip(selectedItem) && (
-                <button 
-                  className="use-button secondary" 
+                <button
+                  className="use-button secondary"
                   onClick={() => handleEquipToggle(selectedItem)}
                   disabled={isProcessing}
                 >
                   {selectedItem.equipped ? 'Снять' : 'Экипировать'}
                 </button>
               )}
-              
+
               <button className="use-button tertiary" onClick={() => { setSelectedItem(null); setUseResult(null); }}>
                 Закрыть
               </button>
             </div>
-            
+
             {useResult && (
               <div className="item-use-result">
                 {useResult}

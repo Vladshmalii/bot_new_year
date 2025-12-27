@@ -9,12 +9,12 @@ interface CharacterStatsProps {
 
 const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) => {
   const [showDerivedDetails, setShowDerivedDetails] = useState(false);
-  
+
   const stats = character.stats || {};
   const abilities = character.abilities || [];
   const resources = character.resource_points || {};
   const inventory = character.inventory || [];
-  
+
   const derived = deriveCharacterStats(character, inventory);
   const [expandedResources, setExpandedResources] = useState<Set<string>>(new Set());
   const [expandedAbilities, setExpandedAbilities] = useState<Set<string>>(new Set());
@@ -37,6 +37,16 @@ const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) 
       string,
       { name: string; description: string; valueText: string }
     > = {
+      foresight_uses_per_scene: {
+        name: 'Передчуття (заряди)',
+        description: 'Короткочасне бачення майбутнього.',
+        valueText: `${value} раз за сцену`,
+      },
+      mind_reading_uses_per_scene: {
+        name: 'Читання думок (заряди)',
+        description: 'Здатність чути поверхневі думки.',
+        valueText: `${value} раз за сцену`,
+      },
       prediction_uses_per_scene: {
         name: 'Крок наперед',
         description: 'Аналітичне передбачення дій на кілька секунд уперед.',
@@ -100,17 +110,17 @@ const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) 
     <div className="character-stats">
       <div className="stats-card">
         <h2 className="stats-title">Характеристики</h2>
-        
+
         <div className="hp-section">
           <div className="hp-bar-container">
             <div className="hp-bar-label">
-              <span>HP</span>
-              <span className="hp-values">
+              <div>HP</div>
+              <div className="hp-values">
                 {character.hp_current} / {derived.hp_max_total}
                 {derived.hp_max_total !== character.hp_max && (
                   <span className="hp-bonus"> (+{derived.hp_max_total - character.hp_max})</span>
                 )}
-              </span>
+              </div>
             </div>
             <div className="hp-bar">
               <div
@@ -125,17 +135,17 @@ const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) 
 
         <div className="damage-section">
           <div className="stat-item">
-            <span className="stat-label">Урон</span>
-            <span className="stat-value">{derived.damage_total}</span>
+            <div className="stat-label">Урон</div>
+            <div className="stat-value">{derived.damage_total}</div>
             {derived.damage_total !== character.damage_base && (
-              <span className="stat-breakdown">
+              <div className="stat-breakdown">
                 ({character.damage_base} + {derived.damage_total - character.damage_base})
-              </span>
+              </div>
             )}
           </div>
           <div className="stat-item">
-            <span className="stat-label">Защита</span>
-            <span className="stat-value">{derived.defense_total}</span>
+            <div className="stat-label">Защита</div>
+            <div className="stat-value">{derived.defense_total}</div>
           </div>
         </div>
 
@@ -143,7 +153,7 @@ const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) 
           <>
             <div className="stats-header">
               <h3 className="section-title">Характеристики</h3>
-              <button 
+              <button
                 className="toggle-details-btn"
                 onClick={() => setShowDerivedDetails(!showDerivedDetails)}
               >
@@ -155,15 +165,15 @@ const CharacterStats: React.FC<CharacterStatsProps> = ({ character, onUpdate }) 
               {Object.entries(stats).map(([key, value]) => {
                 const derivedValue = (derived.stats_total as any)[key] || (value as number);
                 const bonus = derivedValue - (value as number);
-                
+
                 return (
                   <div key={key} className="stat-item">
-                    <span className="stat-label">{key.toUpperCase()}</span>
-                    <span className="stat-value">{derivedValue}</span>
+                    <div className="stat-label">{key.toUpperCase()}</div>
+                    <div className="stat-value">{derivedValue}</div>
                     {showDerivedDetails && bonus !== 0 && (
-                      <span className="stat-breakdown">
+                      <div className="stat-breakdown">
                         {`(${value} + ${bonus})`}
-                      </span>
+                      </div>
                     )}
                   </div>
                 );

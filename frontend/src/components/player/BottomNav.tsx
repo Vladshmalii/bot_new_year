@@ -33,10 +33,11 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) => {
         <span className="nav-label">Статы</span>
       </button>
       <button
-        className={`nav-item dice-center-button`}
+        className={`nav-item dice-center-button ${activeTab === 'dice' ? 'active' : ''}`}
         onClick={() => onTabChange('dice')}
       >
-        <Dices className="nav-icon" size={28} />
+        <Dices className="nav-icon" size={24} />
+        <span className="nav-label">Кубики</span>
       </button>
       <button
         className={`nav-item ${activeTab === 'inventory' ? 'active' : ''}`}

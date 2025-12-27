@@ -42,12 +42,12 @@ const PlayerApp: React.FC<PlayerAppProps> = ({ characterId }) => {
 
   return (
     <div className="player-app">
-      <div className="player-app-header">
-        <h1 className="player-app-title">{characterData.character.name}</h1>
-        <button className="logout-button" onClick={logout}>
+      <header className="character-header">
+        <h1 className="character-name">{characterData.character.name}</h1>
+        <button className="logout-btn-minimal" onClick={logout}>
           Выйти
         </button>
-      </div>
+      </header>
       <div className="player-app-content">
         {activeTab === 'profile' && <CharacterProfile character={characterData.character} />}
         {activeTab === 'stats' && <CharacterStats character={characterData.character} onUpdate={loadCharacterData} />}

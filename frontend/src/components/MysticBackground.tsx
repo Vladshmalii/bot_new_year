@@ -21,20 +21,24 @@ const MysticBackground: React.FC = () => {
       speedY: number;
       color: string;
       opacity: number;
+      sway: number;
 
       constructor() {
         this.x = Math.random() * canvas!.width;
         this.y = Math.random() * canvas!.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = Math.random() * 0.5 + 0.2;
-        const colors = ['#7042ff', '#ffcc33', '#00f2ff', '#ffffff'];
+        this.size = Math.random() * 3 + 1; // Snowflakes vary in size
+        this.speedX = (Math.random() - 0.5) * 0.3; // Gentle sway
+        this.speedY = Math.random() * 1.5 + 0.5; // Falling down
+        this.sway = Math.random() * 0.02;
+
+        // Winter/Festive palette
+        const colors = ['#ffffff', '#e0f7fa', '#b2ebf2', '#fff'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.opacity = Math.random() * 0.5 + 0.1;
+        this.opacity = Math.random() * 0.6 + 0.2;
       }
 
       update() {
-        this.x += this.speedX;
+        this.x += this.speedX + Math.sin(this.y * this.sway) * 0.5; // Add sway
         this.y += this.speedY;
 
         if (this.y > canvas!.height) {
@@ -52,20 +56,16 @@ const MysticBackground: React.FC = () => {
         ctx.fillStyle = this.color;
         ctx.globalAlpha = this.opacity;
         ctx.fill();
-        
-        // Add a tiny glow to some particles
-        if (this.size > 2) {
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = this.color;
-        } else {
-            ctx.shadowBlur = 0;
-        }
+
+        // Soft glow for snow
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
       }
     }
 
     const init = () => {
       particles = [];
-      const particleCount = Math.min(window.innerWidth / 10, 80);
+      const particleCount = Math.min(window.innerWidth / 5, 150); // More particles for snow
       for (let i = 0; i < particleCount; i++) {
         particles.push(new Particle());
       }
@@ -107,7 +107,7 @@ const MysticBackground: React.FC = () => {
         height: '100%',
         pointerEvents: 'none',
         zIndex: 0,
-        opacity: 0.6
+        opacity: 0.8 // Slightly more visible
       }}
     />
   );
