@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
+import { MapPin, Plus, UserPlus, Info } from 'lucide-react';
 
 const LocationsPanel: React.FC = () => {
   const [locations, setLocations] = useState<any[]>([]);
   const [characters, setCharacters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [newLocationName, setNewLocationName] = useState('');
   const [newLocationDesc, setNewLocationDesc] = useState('');
 
@@ -58,80 +59,98 @@ const LocationsPanel: React.FC = () => {
     }
   };
 
+  const selectedLocation = locations.find(l => l.id === selectedLocationId);
+
   if (loading) {
-    return <div className="locations-panel-loading">Загрузка...</div>;
+    return <div className="admin-loading">Загрузка локаций...</div>;
   }
 
   return (
-    <div className="locations-panel">
-      <h1 className="locations-title">🗺️ Локации</h1>
-
-      <div className="locations-content">
-        <div className="locations-list">
-          <h2>Список локаций</h2>
-          
-          <div className="create-location-form">
-            <input
-              type="text"
-              placeholder="Название локации"
-              value={newLocationName}
-              onChange={(e) => setNewLocationName(e.target.value)}
-              className="location-input"
-            />
-            <textarea
-              placeholder="Описание"
-              value={newLocationDesc}
-              onChange={(e) => setNewLocationDesc(e.target.value)}
-              className="location-textarea"
-            />
-            <button onClick={createLocation} className="create-location-button">
-              Создать локацию
-            </button>
-          </div>
-
-          {locations.map((location) => (
-            <div
-              key={location.id}
-              className={`location-card ${selectedLocation === location.id ? 'selected' : ''}`}
-              onClick={() => setSelectedLocation(location.id)}
-            >
-              <h3>{location.name}</h3>
-              {location.description && <p>{location.description}</p>}
-              <div className="location-characters-count">
-                Персонажей: {location.characters?.length || 0}
-              </div>
-            </div>
-          ))}
+    <div className="locations-manager">
+      <div className="manager-sidebar">
+        <div className="sidebar-header">
+          <h3>Список Локаций</h3>
+          <p>{locations.length} локаций создано</p>
         </div>
 
-        {selectedLocation && (
-          <div className="location-details">
-            <h2>Управление локацией</h2>
-            {locations.find((l) => l.id === selectedLocation) && (
-              <>
-                <h3>{locations.find((l) => l.id === selectedLocation)?.name}</h3>
-                <div className="location-characters">
-                  <h4>Персонажи в локации:</h4>
-                  {locations
-                    .find((l) => l.id === selectedLocation)
-                    ?.characters?.map((char: any) => (
-                      <div key={char.id} className="location-character-item">
+        <div className="creation-section">
+          <input
+            type="text"
+            placeholder="Название локации"
+            value={newLocationName}
+            onChange={(e) => setNewLocationName(e.target.value)}
+          />
+          <textarea
+            placeholder="Описание..."
+            value={newLocationDesc}
+            onChange={(e) => setNewLocationDesc(e.target.value)}
+            rows={2}
+          />
+          <button className="admin-btn active full-width" onClick={createLocation}>
+            <Plus size={16} /> Создать локацию
+          </button>
+        </div>
+
+        <div className="location-nav-list">
+          {locations.map((loc) => (
+            <button
+              key={loc.id}
+              className={`char-nav-item ${selectedLocationId === loc.id ? 'active' : ''}`}
+              onClick={() => setSelectedLocationId(loc.id)}
+            >
+              <div className="char-nav-header">
+                <MapPin size={14} />
+                <span className="char-nav-name">{loc.name}</span>
+              </div>
+              <div className="char-nav-stats">
+                <span>{loc.characters?.length || 0} персонажей</span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="manager-main-content">
+        {selectedLocation ? (
+          <div className="location-details-modern">
+            <div className="details-header">
+              <div className="header-info">
+                <MapPin size={32} className="header-icon" />
+                <div>
+                  <h2>{selectedLocation.name}</h2>
+                  <p>{selectedLocation.description || 'Нет описания'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="details-grid">
+              <div className="details-section">
+                <h3><UserPlus size={18} /> Присутствующие</h3>
+                <div className="location-characters-list">
+                  {selectedLocation.characters && selectedLocation.characters.length > 0 ? (
+                    selectedLocation.characters.map((char: any) => (
+                      <div key={char.id} className="location-char-tag">
                         {char.name}
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <p className="empty-text">Локация пуста</p>
+                  )}
                 </div>
-                <div className="move-character-section">
-                  <h4>Переместить персонажа:</h4>
+              </div>
+
+              <div className="details-section">
+                <h3><Info size={18} /> Действия</h3>
+                <div className="action-box">
+                  <label>Переместить персонажа сюда:</label>
                   <select
-                    className="character-select"
+                    className="admin-select"
                     onChange={(e) => {
                       const charId = parseInt(e.target.value);
-                      if (charId) {
-                        moveCharacter(charId, selectedLocation);
-                      }
+                      if (charId) moveCharacter(charId, selectedLocation.id);
                     }}
                   >
-                    <option value="">Выберите персонажа</option>
+                    <option value="">Выберите персонажа...</option>
                     {characters.map((char) => (
                       <option key={char.id} value={char.id}>
                         {char.name}
@@ -139,8 +158,14 @@ const LocationsPanel: React.FC = () => {
                     ))}
                   </select>
                 </div>
-              </>
-            )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="empty-state">
+            <MapPin size={48} className="empty-icon" />
+            <h3>Выберите локацию</h3>
+            <p>Выберите местоположение слева для управления персонажами</p>
           </div>
         )}
       </div>
@@ -149,4 +174,3 @@ const LocationsPanel: React.FC = () => {
 };
 
 export default LocationsPanel;
-

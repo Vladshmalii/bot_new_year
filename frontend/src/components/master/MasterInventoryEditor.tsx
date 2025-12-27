@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, X, Package, Shield, Sword, Heart, Zap, Truck } from 'lucide-react';
 import { InventoryItem, ItemType, EquipSlot } from '../../types/Inventory';
 import { api } from '../../services/api';
 
@@ -34,11 +34,10 @@ const MasterInventoryEditor: React.FC<MasterInventoryEditorProps> = ({ character
 
   const handleSaveItem = async (item: InventoryItem) => {
     try {
-      // Find and update item in inventory
       const updatedInventory = [...inventory];
       const existingIndex = updatedInventory.findIndex(i => i.name === item.name);
-      
-      if (existingIndex >= 0) {
+
+      if (existingIndex >= 0 && !showAddForm) {
         updatedInventory[existingIndex] = item;
       } else {
         updatedInventory.push(item);
@@ -72,7 +71,17 @@ const MasterInventoryEditor: React.FC<MasterInventoryEditorProps> = ({ character
     }
   };
 
-  const ItemForm: React.FC<{ item: InventoryItem; onSave: (item: InventoryItem) => void; onCancel: () => void }> = ({ item, onSave, onCancel }) => {
+  const getItemIcon = (type: ItemType) => {
+    switch (type) {
+      case 'weapon': return <Sword size={16} />;
+      case 'armor': return <Shield size={16} />;
+      case 'consumable': return <Heart size={16} />;
+      case 'vehicle': return <Truck size={16} />;
+      default: return <Package size={16} />;
+    }
+  };
+
+  const ItemForm: React.FC<{ item: InventoryItem; isNew: boolean; onSave: (item: InventoryItem) => void; onCancel: () => void }> = ({ item, isNew, onSave, onCancel }) => {
     const [formData, setFormData] = useState<InventoryItem>(item);
 
     const updateField = (path: string[], value: any) => {
@@ -86,295 +95,95 @@ const MasterInventoryEditor: React.FC<MasterInventoryEditorProps> = ({ character
     };
 
     return (
-      <div className="master-item-form">
-        <h3 className="form-title">{item.name ? `Редактировать: ${item.name}` : 'Новый предмет'}</h3>
-
-        <div className="form-group">
-          <label>Название:</label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={e => updateField(['name'], e.target.value)}
-            className="form-input"
-          />
+      <div className="admin-modal-card">
+        <div className="admin-modal-header">
+          <h3>{isNew ? 'Новый предмет' : `Редактирование: ${item.name}`}</h3>
+          <button onClick={onCancel} className="close-btn"><X size={20} /></button>
         </div>
 
-        <div className="form-group">
-          <label>Краткое описание:</label>
-          <input
-            type="text"
-            value={formData.short_description}
-            onChange={e => updateField(['short_description'], e.target.value)}
-            className="form-input"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Детали:</label>
-          <textarea
-            value={formData.details}
-            onChange={e => updateField(['details'], e.target.value)}
-            className="form-textarea"
-            rows={3}
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label>Тип:</label>
-            <select
-              value={formData.item_type}
-              onChange={e => updateField(['item_type'], e.target.value as ItemType)}
-              className="form-select"
-            >
-              <option value="tool">Инструмент</option>
-              <option value="weapon">Оружие</option>
-              <option value="armor">Броня</option>
-              <option value="consumable">Расходник</option>
-              <option value="vehicle">Транспорт</option>
-              <option value="quest">Квестовый</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Слот экипировки:</label>
-            <select
-              value={formData.equip_slot}
-              onChange={e => updateField(['equip_slot'], e.target.value as EquipSlot)}
-              className="form-select"
-            >
-              <option value="none">Нет</option>
-              <option value="hand">Рука</option>
-              <option value="offhand">Вторая рука</option>
-              <option value="body">Тело</option>
-              <option value="head">Голова</option>
-              <option value="accessory">Аксессуар</option>
-              <option value="vehicle">Транспорт</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h4>Модификаторы:</h4>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Урон:</label>
+        <div className="admin-form-scrollable">
+          <div className="form-grid">
+            <div className="form-group span-2">
+              <label>Название</label>
               <input
-                type="number"
-                value={formData.modifiers.damage_bonus}
-                onChange={e => updateField(['modifiers', 'damage_bonus'], Number(e.target.value))}
-                className="form-input-small"
+                type="text"
+                value={formData.name}
+                onChange={e => updateField(['name'], e.target.value)}
+                placeholder="Меч Ледяного Пламени"
               />
             </div>
-            <div className="form-group">
-              <label>Защита:</label>
+
+            <div className="form-group span-2">
+              <label>Описание (кратко)</label>
               <input
-                type="number"
-                value={formData.modifiers.defense_bonus}
-                onChange={e => updateField(['modifiers', 'defense_bonus'], Number(e.target.value))}
-                className="form-input-small"
+                type="text"
+                value={formData.short_description}
+                onChange={e => updateField(['short_description'], e.target.value)}
               />
             </div>
+
             <div className="form-group">
-              <label>HP:</label>
-              <input
-                type="number"
-                value={formData.modifiers.hp_bonus}
-                onChange={e => updateField(['modifiers', 'hp_bonus'], Number(e.target.value))}
-                className="form-input-small"
-              />
+              <label>Тип</label>
+              <select value={formData.item_type} onChange={e => updateField(['item_type'], e.target.value as ItemType)}>
+                <option value="tool">Инструмент</option>
+                <option value="weapon">Оружие</option>
+                <option value="armor">Броня</option>
+                <option value="consumable">Расходник</option>
+                <option value="vehicle">Транспорт</option>
+                <option value="quest">Квест</option>
+              </select>
             </div>
-          </div>
-          <div className="form-row">
-            {['str', 'dex', 'int', 'wis', 'cha', 'con'].map(stat => (
-              <div key={stat} className="form-group">
-                <label>{stat.toUpperCase()}:</label>
-                <input
-                  type="number"
-                  value={(formData.modifiers.stat_bonus as any)[stat]}
-                  onChange={e => updateField(['modifiers', 'stat_bonus', stat], Number(e.target.value))}
-                  className="form-input-small"
-                />
-              </div>
-            ))}
+
+            <div className="form-group">
+              <label>Слот</label>
+              <select value={formData.equip_slot} onChange={e => updateField(['equip_slot'], e.target.value as EquipSlot)}>
+                <option value="none">Нет</option>
+                <option value="hand">Рука</option>
+                <option value="offhand">Вторая рука</option>
+                <option value="body">Тело</option>
+                <option value="head">Голова</option>
+                <option value="accessory">Аксессуар</option>
+                <option value="vehicle">Транспорт</option>
+              </select>
+            </div>
+
+            <div className="form-section-title span-2">Бонусы и Модификаторы</div>
+
+            <div className="form-group">
+              <label><Sword size={12} /> Урон</label>
+              <input type="number" value={formData.modifiers.damage_bonus} onChange={e => updateField(['modifiers', 'damage_bonus'], Number(e.target.value))} />
+            </div>
+            <div className="form-group">
+              <label><Shield size={12} /> Защита</label>
+              <input type="number" value={formData.modifiers.defense_bonus} onChange={e => updateField(['modifiers', 'defense_bonus'], Number(e.target.value))} />
+            </div>
+            <div className="form-group">
+              <label><Heart size={12} /> HP</label>
+              <input type="number" value={formData.modifiers.hp_bonus} onChange={e => updateField(['modifiers', 'hp_bonus'], Number(e.target.value))} />
+            </div>
+
+            <div className="form-section-title span-2">Характеристики</div>
+            <div className="stats-mini-grid span-2">
+              {['str', 'dex', 'int', 'wis', 'cha', 'con'].map(s => (
+                <div key={s} className="form-group-mini">
+                  <label>{s.toUpperCase()}</label>
+                  <input type="number" value={(formData.modifiers.stat_bonus as any)[s]} onChange={e => updateField(['modifiers', 'stat_bonus', s], Number(e.target.value))} />
+                </div>
+              ))}
+            </div>
+
+            <div className="form-section-title span-2">Дополнительно</div>
+            <div className="form-group span-2">
+              <label>Логика использования (TYPE;param=val)</label>
+              <input type="text" value={formData.use_effect} onChange={e => updateField(['use_effect'], e.target.value)} />
+            </div>
           </div>
         </div>
 
-        <div className="form-section">
-          <h4>Прочность:</h4>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Текущая:</label>
-              <input
-                type="number"
-                value={formData.durability.current}
-                onChange={e => updateField(['durability', 'current'], Number(e.target.value))}
-                className="form-input-small"
-              />
-            </div>
-            <div className="form-group">
-              <label>Максимум (0 = неразрушимый):</label>
-              <input
-                type="number"
-                value={formData.durability.max}
-                onChange={e => updateField(['durability', 'max'], Number(e.target.value))}
-                className="form-input-small"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label>Эффект использования (формат: TYPE;param=value):</label>
-          <input
-            type="text"
-            value={formData.use_effect}
-            onChange={e => updateField(['use_effect'], e.target.value)}
-            className="form-input"
-            placeholder="ADVANTAGE_NEXT_ROLL или REVEAL_CLUE"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Описание использования:</label>
-          <textarea
-            value={formData.use_description}
-            onChange={e => updateField(['use_description'], e.target.value)}
-            className="form-textarea"
-            rows={2}
-          />
-        </div>
-
-        {formData.item_type === 'vehicle' && (
-          <div className="form-section">
-            <h4>Параметры транспорта:</h4>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Топливо (текущее):</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.fuel_current || 0}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.fuel_current = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-              <div className="form-group">
-                <label>Топливо (макс):</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.fuel_max || 100}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.fuel_max = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-              <div className="form-group">
-                <label>Режим скорости:</label>
-                <select
-                  value={formData.vehicle?.speed_mode || 'normal'}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.speed_mode = e.target.value as 'normal' | 'fast';
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-select"
-                >
-                  <option value="normal">Обычный</option>
-                  <option value="fast">Быстрый</option>
-                </select>
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Бонус скорости:</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.speed_bonus || 0}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.speed_bonus = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-              <div className="form-group">
-                <label>Мест:</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.seats || 4}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.seats = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-              <div className="form-group">
-                <label>Радиус привлечения (м):</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.taunt_radius || 50}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.taunt_radius = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-              <div className="form-group">
-                <label>Уровень шума:</label>
-                <input
-                  type="number"
-                  value={formData.vehicle?.noise_level || 5}
-                  onChange={e => {
-                    const vehicle = formData.vehicle || {
-                      fuel_current: 0, fuel_max: 100, speed_mode: 'normal' as const,
-                      speed_bonus: 0, seats: 4, taunt_radius: 50, noise_level: 5
-                    };
-                    vehicle.noise_level = Number(e.target.value);
-                    updateField(['vehicle'], vehicle);
-                  }}
-                  className="form-input-small"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="form-actions">
-          <button className="form-btn save-btn" onClick={() => onSave(formData)}>
-            <Save size={16} /> Сохранить
-          </button>
-          <button className="form-btn cancel-btn" onClick={onCancel}>
-            <X size={16} /> Отмена
+        <div className="admin-modal-footer">
+          <button className="admin-btn secondary" onClick={onCancel}>Отмена</button>
+          <button className="admin-btn primary" onClick={() => onSave(formData)}>
+            <Save size={18} /> Сохранить предмет
           </button>
         </div>
       </div>
@@ -382,86 +191,60 @@ const MasterInventoryEditor: React.FC<MasterInventoryEditorProps> = ({ character
   };
 
   return (
-    <div className="master-inventory-editor">
-      <div className="editor-header">
-        <h3>Инвентарь: {character.name}</h3>
-        <button className="add-item-btn" onClick={() => setShowAddForm(true)}>
-          <Plus size={18} /> Добавить предмет
+    <div className="master-inventory-editor-new">
+      <div className="editor-top-bar">
+        <div className="editor-info">
+          <h2>Инвентарь персонажа</h2>
+          <p>{character.name} — {character.role || 'Без роли'}</p>
+        </div>
+        <button className="admin-btn success" onClick={() => setShowAddForm(true)}>
+          <Plus size={18} /> Добавить новый предмет
         </button>
       </div>
 
-      {showAddForm && (
-        <div className="form-overlay">
-          <ItemForm 
-            item={defaultItem()} 
-            onSave={handleSaveItem} 
-            onCancel={() => setShowAddForm(false)} 
-          />
-        </div>
-      )}
-
-      {editingItem && (
-        <div className="form-overlay">
-          <ItemForm 
-            item={editingItem} 
-            onSave={handleSaveItem} 
-            onCancel={() => setEditingItem(null)} 
-          />
-        </div>
-      )}
-
-      <div className="inventory-table">
+      <div className="items-list-modern">
         {inventory.length === 0 ? (
-          <div className="empty-message">Инвентарь пуст</div>
+          <div className="no-items">Инвентарь пуст</div>
         ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Название</th>
-                <th>Тип</th>
-                <th>Слот</th>
-                <th>Экипировано</th>
-                <th>Бонусы</th>
-                <th>Действия</th>
-              </tr>
-            </thead>
-            <tbody>
-              {inventory.map((item, index) => (
-                <tr key={`${item.name}-${index}`}>
-                  <td>{item.name}</td>
-                  <td>{item.item_type}</td>
-                  <td>{item.equip_slot}</td>
-                  <td>{item.equipped ? 'Да' : 'Нет'}</td>
-                  <td>
-                    {item.modifiers.damage_bonus !== 0 && `Урон +${item.modifiers.damage_bonus} `}
-                    {item.modifiers.defense_bonus !== 0 && `Защита +${item.modifiers.defense_bonus} `}
-                    {item.modifiers.hp_bonus !== 0 && `HP +${item.modifiers.hp_bonus}`}
-                  </td>
-                  <td>
-                    <button 
-                      className="action-btn edit-btn" 
-                      onClick={() => setEditingItem(item)}
-                      title="Редактировать"
-                    >
-                      <Edit size={16} />
-                    </button>
-                    <button 
-                      className="action-btn delete-btn" 
-                      onClick={() => handleDeleteItem(item.name)}
-                      title="Удалить"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="items-grid-admin">
+            {inventory.map((item, index) => (
+              <div key={`${item.name}-${index}`} className="admin-item-card">
+                <div className="item-card-icon">
+                  {getItemIcon(item.item_type)}
+                </div>
+                <div className="item-card-main">
+                  <div className="item-card-name-row">
+                    <h4>{item.name}</h4>
+                    {item.equipped && <span className="equipped-badge">Экипировано</span>}
+                  </div>
+                  <p className="item-card-desc">{item.short_description || 'Нет описания'}</p>
+                  <div className="item-card-meta">
+                    <span className="type-badge">{item.item_type}</span>
+                    <span className="slot-badge">{item.equip_slot !== 'none' ? item.equip_slot : 'Без слота'}</span>
+                  </div>
+                </div>
+                <div className="item-card-actions">
+                  <button className="icon-btn" onClick={() => setEditingItem(item)}><Edit size={16} /></button>
+                  <button className="icon-btn danger" onClick={() => handleDeleteItem(item.name)}><Trash2 size={16} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
+
+      {(showAddForm || editingItem) && (
+        <div className="admin-modal-overlay">
+          <ItemForm
+            item={editingItem || defaultItem()}
+            isNew={!!showAddForm}
+            onSave={handleSaveItem}
+            onCancel={() => { setShowAddForm(false); setEditingItem(null); }}
+          />
+        </div>
+      )}
     </div>
   );
 };
 
 export default MasterInventoryEditor;
-

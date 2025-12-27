@@ -26,7 +26,6 @@
       "character_id": 6
     }
   ],
-
   "characters": [
     {
       "id": 2,
@@ -50,26 +49,21 @@
         "Читання намірів (визначення справжніх намірів NPC)",
         "Вербальний нокаут (фрази з мемів, пісень, фільмів і мультиків, що збивають ворога з пантелику)"
       ],
-    
       "role": "Раціоналіст, мозок групи",
-    
       "goals": {
         "public": "Знайти раціональне пояснення всьому, що відбувається в місті",
         "secret": "Довести собі, що світ не є чистим хаосом і піддається розумінню"
       },
-    
       "fears": [
         "Дворняги та агресивні тварини",
         "Невідоме, яке не вкладається в логіку",
         "Втратити контроль над ситуацією",
         "Фатально помилитися у вирішальний момент"
       ],
-    
       "resource_points": {
         "prediction_uses_per_scene": 1,
         "verbal_burst_uses_per_scene": 2
       },
-    
       "inventory": [
         {
           "name": "Блокнот",
@@ -98,9 +92,19 @@
             "damage_bonus": 1,
             "defense_bonus": 0,
             "hp_bonus": 0,
-            "stat_bonus": { "str": 0, "dex": 0, "int": 0, "wis": 0, "cha": 0, "con": 0 }
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 0,
+              "cha": 0,
+              "con": 0
+            }
           },
-          "durability": { "current": 50, "max": 50 }
+          "durability": {
+            "current": 50,
+            "max": 50
+          }
         },
         {
           "name": "Паспорт",
@@ -138,14 +142,10 @@
           "use_description": ""
         }
       ],
-    
       "notes_visible_to_player": [],
       "notes_hidden_from_player": [],
-    
       "location_id": 1
-    }
-    ,
-
+    },
     {
       "id": 3,
       "name": "Алексей \"Башка\" Дикий",
@@ -168,25 +168,20 @@
         "Алкогольний берсерк (посилення через сп'яніння)",
         "Музичний берсерк (посилення під музику)"
       ],
-    
       "role": "Хаос-енергетик",
-    
       "goals": {
         "public": "Кайфувати, тримати атмосферу і не дати друзям зламатися",
         "secret": "Довести, що він не просто хаос, а реальна сила, на яку можна покластися"
       },
-    
       "fears": [
         "Бути тягарем для друзів",
         "Втратити контроль і нашкодити своїм",
         "Виявитися порожнім без енергії та руху"
       ],
-    
       "resource_points": {
         "photon_burst_uses_per_scene": 1,
         "berserk_state_active": false
       },
-    
       "inventory": [
         {
           "name": "Ключі від ВАЗ-2103",
@@ -201,9 +196,19 @@
             "damage_bonus": 0,
             "defense_bonus": 0,
             "hp_bonus": 0,
-            "stat_bonus": { "str": 0, "dex": 0, "int": 0, "wis": 0, "cha": 0, "con": 0 }
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 0,
+              "cha": 0,
+              "con": 0
+            }
           },
-          "durability": { "current": 0, "max": 0 },
+          "durability": {
+            "current": 0,
+            "max": 0
+          },
           "vehicle": {
             "fuel_current": 30,
             "fuel_max": 50,
@@ -257,14 +262,10 @@
           "use_description": ""
         }
       ],
-    
       "notes_visible_to_player": [],
       "notes_hidden_from_player": [],
-    
       "location_id": 1
-    }
-    ,
-
+    },
     {
       "id": 4,
       "name": "Анна",
@@ -286,25 +287,20 @@
         "Читання емоцій та намірів (відчуття брехні, страху, агресії)",
         "Психо-імпульс (емоційний сплеск, що впливає на предмети й простір)"
       ],
-    
       "role": "Заражена силою",
-    
       "goals": {
         "public": "Захистити близьких і не дати їм постраждати",
         "secret": "Навчитися читати думки повністю й не боятися власної сили"
       },
-    
       "fears": [
         "Темрява",
         "Втратити контроль над собою",
         "Зашкодити тим, кого любить"
       ],
-    
       "resource_points": {
         "psy_impulse_uses_per_scene": 2,
         "emotion_reading_passive": true
       },
-    
       "inventory": [
         {
           "name": "Плеєр або телефон з музикою",
@@ -342,14 +338,10 @@
           "use_description": ""
         }
       ],
-    
       "notes_visible_to_player": [],
       "notes_hidden_from_player": [],
-    
       "location_id": 1
-    }
-    ,
-
+    },
     {
       "id": 5,
       "name": "Александра \"Магічка\"",
@@ -371,25 +363,20 @@
         "Перемикач голів (емоційний вплив на настрій та рішення)",
         "Емоційний імпульс захисту (змушує супротивника помилитися або вагатися)"
       ],
-    
       "role": "Емоційний контролер",
-    
       "goals": {
         "public": "Зробити Новий Рік теплим, живим і справжнім для всіх",
         "secret": "Не втекти у складний момент і залишитись з командою"
       },
-    
       "fears": [
         "Темрява",
         "Бути покинутою",
         "Втратити контроль над емоціями інших"
       ],
-    
       "resource_points": {
         "emotion_shift_uses_per_scene": 1,
         "defensive_impulse_uses_per_scene": 1
       },
-    
       "inventory": [
         {
           "name": "Скетчбук",
@@ -427,14 +414,10 @@
           "use_description": ""
         }
       ],
-    
       "notes_visible_to_player": [],
       "notes_hidden_from_player": [],
-    
       "location_id": 1
-    }
-    ,
-
+    },
     {
       "id": 6,
       "name": "Артем",
@@ -481,7 +464,17 @@
           "equip_slot": "head",
           "equipped": true,
           "modifiers": {
-            "wis": 1
+            "damage_bonus": 0,
+            "defense_bonus": 0,
+            "hp_bonus": 0,
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 1,
+              "cha": 0,
+              "con": 0
+            }
           },
           "use_effect": "calm_focus",
           "use_description": "Знижує емоційний тиск, дає бонус до концентрації на сцену."
@@ -494,7 +487,17 @@
           "equip_slot": "none",
           "equipped": false,
           "modifiers": {
-            "int": 1
+            "damage_bonus": 0,
+            "defense_bonus": 0,
+            "hp_bonus": 0,
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 1,
+              "wis": 0,
+              "cha": 0,
+              "con": 0
+            }
           },
           "use_effect": "analysis_boost",
           "use_description": "Дозволяє глибше аналізувати ситуацію або NPC."
@@ -506,18 +509,42 @@
           "item_type": "quest",
           "equip_slot": "none",
           "equipped": false,
-          "modifiers": {},
+          "modifiers": {
+            "damage_bonus": 0,
+            "defense_bonus": 0,
+            "hp_bonus": 0,
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 0,
+              "cha": 0,
+              "con": 0
+            }
+          },
           "use_effect": "foreshadow",
-          "use_description": "Може дати майстру підказку або натяк на майбутню подію."
+          "use_description": "Може дати майстру подказку або натяк на майбутню подію."
         },
         {
-          "name": "Кишеньковий диктофон",
+          "name": "Кишеньковый диктофон",
           "short_description": "Записує ідеї та голоси",
           "details": "Іноді записує не лише голос Артема. На фоні з’являються сторонні шуми та фрази.",
           "item_type": "tool",
           "equip_slot": "accessory",
           "equipped": false,
-          "modifiers": {},
+          "modifiers": {
+            "damage_bonus": 0,
+            "defense_bonus": 0,
+            "hp_bonus": 0,
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 0,
+              "cha": 0,
+              "con": 0
+            }
+          },
           "use_effect": "memory_capture",
           "use_description": "Фіксує важливу інформацію або дивний феномен."
         },
@@ -529,7 +556,17 @@
           "equip_slot": "accessory",
           "equipped": true,
           "modifiers": {
-            "cha": 1
+            "damage_bonus": 0,
+            "defense_bonus": 0,
+            "hp_bonus": 0,
+            "stat_bonus": {
+              "str": 0,
+              "dex": 0,
+              "int": 0,
+              "wis": 0,
+              "cha": 1,
+              "con": 0
+            }
           },
           "use_effect": "emotional_anchor",
           "use_description": "Допомагає втримати контроль над емоціями."
@@ -541,41 +578,52 @@
       ],
       "location_id": 1
     }
-    
-    
   ],
-
   "locations": [
     {
       "id": 1,
       "name": "Кафе «Орбіта»",
       "description": "Затишне ретро-кафе з музикою 80-х, неоном і запахом мандаринів. Стартова точка історії.",
-      "tags": ["старт", "соціальна", "ретро"],
+      "tags": [
+        "старт",
+        "соціальна",
+        "ретро"
+      ],
       "is_active": true
     },
     {
       "id": 2,
       "name": "Центральна площа",
       "description": "Людна площа з ялинкою та дивними збоями світла.",
-      "tags": ["місто", "люди", "аномалія"],
+      "tags": [
+        "місто",
+        "люди",
+        "аномалія"
+      ],
       "is_active": false
     },
     {
       "id": 3,
       "name": "Радіовишка",
       "description": "Стара радіовежа з перешкодами і повторюваними сигналами.",
-      "tags": ["аномалія", "сигнал", "тригер"],
+      "tags": [
+        "аномалія",
+        "сигнал",
+        "тригер"
+      ],
       "is_active": false
     },
     {
       "id": 4,
       "name": "Науково-дослідний інститут (НІІ)",
       "description": "Джерело збою. Місце фінального конфлікту.",
-      "tags": ["фінал", "таємниця"],
+      "tags": [
+        "фінал",
+        "таємниця"
+      ],
       "is_active": false
     }
   ],
-
   "mobs": [],
   "items": [],
   "character_items": [],

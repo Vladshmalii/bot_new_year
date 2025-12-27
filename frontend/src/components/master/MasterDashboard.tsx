@@ -79,8 +79,7 @@ const MasterDashboard: React.FC = () => {
   }
 
   return (
-    <div className="master-dashboard">
-      <h1 className="dashboard-title">📊 Дашборд</h1>
+    <div className="master-dashboard-new">
 
       <div className="dashboard-grid">
         {dashboardData?.characters?.map((char: any) => (

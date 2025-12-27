@@ -19,14 +19,21 @@ export const migrateInventoryItem = (item: any): InventoryItem => {
     details: item.details || '',
     use_effect: item.use_effect || '',
     use_description: item.use_description || '',
-    
+
     item_type: item.item_type || 'tool',
     equip_slot: item.equip_slot || 'none',
     equipped: item.equipped || false,
-    
-    modifiers: item.modifiers || defaultModifiers(),
+
+    modifiers: {
+      ...defaultModifiers(),
+      ...(item.modifiers || {}),
+      stat_bonus: {
+        ...defaultModifiers().stat_bonus,
+        ...(item.modifiers?.stat_bonus || {})
+      }
+    },
     durability: item.durability || defaultDurability(),
-    
+
     vehicle: item.vehicle || undefined
   };
 };
@@ -35,5 +42,3 @@ export const migrateCharacterInventory = (inventory: any[]): InventoryItem[] => 
   if (!Array.isArray(inventory)) return [];
   return inventory.map(migrateInventoryItem);
 };
-
-

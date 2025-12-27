@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import MasterInventoryEditor from './MasterInventoryEditor';
 import { computeDerivedStats } from '../../utils/deriveStats';
+import { User, Shield, Sword, Package } from 'lucide-react';
 
 const InventoryManager: React.FC = () => {
   const [characters, setCharacters] = useState<any[]>([]);
@@ -26,50 +27,50 @@ const InventoryManager: React.FC = () => {
   const selectedCharacter = characters.find(c => c.id === selectedCharacterId);
 
   if (loading) {
-    return <div className="inventory-manager-loading">Загрузка...</div>;
+    return <div className="admin-loading">Загрузка инвентаря...</div>;
   }
 
   return (
-    <div className="inventory-manager">
-      <h1 className="inventory-manager-title">🎒 Управление инвентарём и экипировкой</h1>
+    <div className="inventory-manager-new">
+      <div className="inventory-sidebar">
+        <h3 className="sidebar-title">Персонажи</h3>
+        <div className="character-nav-list">
+          {characters.map((char) => {
+            const derived = computeDerivedStats(char, char.inventory || []);
+            const isSelected = selectedCharacterId === char.id;
 
-      <div className="inventory-manager-content">
-        <div className="character-selector-panel">
-          <h2>Выберите персонажа:</h2>
-          <div className="character-cards">
-            {characters.map((char) => {
-              const derived = computeDerivedStats(char, char.inventory || []);
-              const isSelected = selectedCharacterId === char.id;
-              
-              return (
-                <div
-                  key={char.id}
-                  className={`character-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => setSelectedCharacterId(char.id)}
-                >
-                  <h3>{char.name}</h3>
-                  <div className="character-quick-stats">
-                    <div>HP: {char.hp_current}/{derived.hp_max_total}</div>
-                    <div>Урон: {derived.damage_total}</div>
-                    <div>Защита: {derived.defense_total}</div>
-                    <div>Предметов: {(char.inventory || []).length}</div>
-                  </div>
+            return (
+              <button
+                key={char.id}
+                className={`char-nav-item ${isSelected ? 'active' : ''}`}
+                onClick={() => setSelectedCharacterId(char.id)}
+              >
+                <div className="char-nav-header">
+                  <User size={14} />
+                  <span className="char-nav-name">{char.name}</span>
                 </div>
-              );
-            })}
-          </div>
+                <div className="char-nav-stats">
+                  <span title="Урон"><Sword size={10} /> {derived.damage_total}</span>
+                  <span title="Защита"><Shield size={10} /> {derived.defense_total}</span>
+                  <span title="Предметы"><Package size={10} /> {(char.inventory || []).length}</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
+      </div>
 
-        {selectedCharacter && (
-          <MasterInventoryEditor 
-            character={selectedCharacter} 
-            onUpdate={loadData} 
+      <div className="inventory-main-content">
+        {selectedCharacter ? (
+          <MasterInventoryEditor
+            character={selectedCharacter}
+            onUpdate={loadData}
           />
-        )}
-
-        {!selectedCharacter && (
-          <div className="no-character-selected">
-            <p>Выберите персонажа для управления инвентарём</p>
+        ) : (
+          <div className="empty-state">
+            <Package size={48} className="empty-icon" />
+            <h3>Выберите персонажа</h3>
+            <p>Выберите героя слева, чтобы просмотреть и отредактировать его инвентарь</p>
           </div>
         )}
       </div>
@@ -78,4 +79,3 @@ const InventoryManager: React.FC = () => {
 };
 
 export default InventoryManager;
-

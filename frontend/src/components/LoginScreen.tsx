@@ -112,7 +112,7 @@ const LoginScreen: React.FC = () => {
       {showMasterCode && (
         <div className="master-code-modal">
           <div className="master-code-content">
-            <h2 style={{ fontFamily: 'Cinzel, serif', color: 'var(--accent-gold)' }}>Тайный Код</h2>
+            <h2 className="modal-title" style={{ color: 'var(--accent-secondary)', marginBottom: '20px' }}>Тайный Код</h2>
             <form onSubmit={handleMasterCodeSubmit}>
               <input
                 type="password"
@@ -152,9 +152,9 @@ const LoginScreen: React.FC = () => {
       <div className="login-container">
         <div className="login-header">
           <div className="login-title-wrapper">
-            <Sparkles className="login-title-icon" size={36} color="var(--accent-gold)" />
-            <h1 className="login-title" style={{ fontFamily: 'Cinzel, serif', letterSpacing: '2px' }}>
-              Mystic <span style={{ color: 'var(--accent-gold)' }}>2025</span>
+            <Sparkles className="login-title-icon" size={32} color="var(--accent-secondary)" />
+            <h1 className="login-title">
+              Mystic <span style={{ color: 'var(--accent-secondary)' }}>2025</span>
             </h1>
           </div>
           <p className="login-subtitle">Выберите свою судьбу</p>
