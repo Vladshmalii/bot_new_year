@@ -148,22 +148,80 @@ body {
   cursor: pointer;
 }
 
-.nav-button:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #fff;
+/* --- MASTER DASHBOARD --- */
+.master-dashboard-new {
+  animation: fadeIn 0.4s ease-out;
 }
 
-.nav-button.active {
-  background: var(--accent-primary);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(92, 96, 245, 0.2);
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding-bottom: 40px;
 }
 
-.nav-text {
+.character-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.character-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-primary);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  background: var(--bg-card-elevated);
+}
+
+.character-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-primary), transparent);
+  opacity: 0.7;
+}
+
+.character-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.character-card-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.character-card-player {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 6px;
   white-space: nowrap;
-  font-weight: 500;
-  font-size: 14px;
 }
+
+.character-card-location,
+.character-card-last-roll {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 
 /* --- ADMIN PANEL BUTTONS FIX --- */
 /* Restore visibility and clickability for all buttons in admin panel */
@@ -966,22 +1024,410 @@ body {
   transform: translateY(-2px);
 }
 
-/* --- INVENTORY FILTERS (Telegram Segmented Control) --- */
-.inventory-filters {
+.login-top-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   display: flex;
-  overflow-x: auto;
-  gap: 8px;
-  padding: 4px;
-  margin-bottom: 24px;
-  scrollbar-width: none;
-  /* Hide scrollbar Firefox */
-  -ms-overflow-style: none;
-  /* Hide scrollbar IE */
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  padding: 6px;
+  gap: 12px;
+  z-index: 20;
 }
 
+.master-code-button,
+.reset-cache-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.master-code-button:hover,
+.reset-cache-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+.master-code-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.master-code-content {
+  background: var(--bg-card);
+  padding: 32px;
+  border-radius: 24px;
+  border: 1px solid var(--border-subtle);
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.master-code-content input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-main);
+  padding: 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 0.5em;
+  outline: none;
+  margin-bottom: 24px;
+}
+
+.master-code-content input:focus {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 15px rgba(251, 176, 59, 0.2);
+}
+
+.master-code-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.master-code-buttons button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.master-code-buttons .login-button {
+  background: var(--accent-secondary) !important;
+  color: #000;
+}
+
+.master-code-buttons .cancel-button {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+/* --- ADMIN EDIT FORMS & SECRETS --- */
+.character-modal-header-edit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.character-modal-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.edit-toggle-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.edit-toggle-button.active {
+  background: var(--accent-primary);
+  color: #fff;
+  border-color: var(--accent-primary);
+}
+
+.edit-character-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.form-group-edit label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.form-group-edit input,
+.admin-select,
+.creation-section input,
+.creation-section textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-main);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.form-group-edit input:focus,
+.admin-select:focus,
+.creation-section input:focus,
+.creation-section textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.form-row-edit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stats-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.stat-edit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat-edit-item input {
+  text-align: center;
+  padding: 8px 4px;
+}
+
+.save-changes-button {
+  margin-top: 16px;
+  background: var(--accent-success);
+  color: #000;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.save-changes-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Master Details View */
+.master-character-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid var(--border-subtle);
+}
+
+.master-secret-section {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+  /* Slight red tint for secrets */
+}
+
+.master-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+}
+
+.info-item-hp {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.stat-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stat-pill {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.secret-info-block h4 {
+  color: var(--accent-danger);
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.secret-info-block p,
+.secret-info-block li {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+/* --- INVENTORY & LOCATIONS NAV LISTS --- */
+.inventory-manager-new,
+.locations-manager {
+  display: flex;
+  height: calc(100vh - 80px);
+  /* Adjust based on header */
+  gap: 20px;
+}
+
+.inventory-sidebar,
+.manager-sidebar {
+  width: 300px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-title,
+.sidebar-header h3 {
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+  margin: 0;
+}
+
+.character-nav-list,
+.location-nav-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.char-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  color: var(--text-secondary);
+}
+
+.char-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.char-nav-item.active {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+.char-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.char-nav-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.char-nav-stats span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-icon {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.inventory-main-content,
+.manager-main-content {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  /* Or auto if content scrolls */
+  position: relative;
+}
+
+/* Creation Section in Sidebar */
+.creation-section {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- INVENTORY FILTERS (Telegram Segmented Control) --- */
 .inventory-filters::-webkit-scrollbar {
   display: none;
 }
