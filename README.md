@@ -77,36 +77,31 @@ npm run dev
 
 ## Деплой на GitHub Pages
 
-Для публикации приложения на GitHub Pages:
+### 🚀 Автоматический деплой через GitHub Actions (рекомендуется)
 
-1. **Создайте репозиторий на GitHub** (если еще не создан)
+Приложение автоматически деплоится при каждом push в ветку `main`.
 
-2. **Обновите homepage в `frontend/package.json`**:
-   ```json
-   "homepage": "https://YOUR_USERNAME.github.io/bot_new_year"
-   ```
-   Замените `YOUR_USERNAME` на ваш GitHub username.
-
-3. **Инициализируйте Git** (если еще не сделано):
+1. **Загрузите код на GitHub**:
    ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/YOUR_USERNAME/bot_new_year.git
-   git branch -M main
    git push -u origin main
    ```
 
-4. **Включите GitHub Pages** в настройках репозитория:
-   - Settings → Pages
-   - Source: Branch `gh-pages`, Folder `/ (root)`
+2. **Включите GitHub Pages**:
+   - Перейдите в Settings → Pages вашего репозитория
+   - Source: выберите **GitHub Actions** (не ветку!)
+   - Сохраните
 
-5. **Задеплойте**:
-   ```bash
-   cd frontend
-   npm run deploy
-   ```
+3. **Готово!** Сайт будет доступен через 1-2 минуты:
+   `https://Vladshmalii.github.io/bot_new_year`
 
-Сайт будет доступен по адресу: `https://YOUR_USERNAME.github.io/bot_new_year`
+**Подробная инструкция:** см. [DEPLOY_GITHUB_ACTIONS.md](./DEPLOY_GITHUB_ACTIONS.md)
+
+### 📦 Ручной деплой через gh-pages (альтернатива)
+
+Если нужен ручной деплой:
+```bash
+cd frontend
+npm run deploy
+```
 
 **Подробная инструкция:** см. [DEPLOY.md](./DEPLOY.md)
